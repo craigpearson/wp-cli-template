@@ -166,7 +166,9 @@ class Template_Command extends WP_CLI_Command {
             $limit = 'LIMIT ' . intval($assoc_args['limit']);
         }
 
-        $sql = "UPDATE `wp_postmeta` SET `meta_value` = $new_template WHERE $where $limit";
+        $table = $this->_table_prefix . 'postmeta';
+
+        $sql = "UPDATE `$table` SET `meta_value` = $new_template WHERE $where $limit";
         $result = $this->_wpdb->query($sql);
 
         WP_CLI::success( "Sucessfully executed. $result posts updated." );
