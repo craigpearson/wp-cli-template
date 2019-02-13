@@ -9,8 +9,11 @@ class Template_Command extends WP_CLI_Command {
     private $_wpdb;
 
     public function __construct() {
-        $this->_wpdb = $GLOBALS['wpdb'];
-        $this->_table_prefix = $GLOBALS['table_prefix'];
+
+        global $table_prefix, $wpdb;
+
+        $this->_wpdb = $wpdb;
+        $this->_table_prefix = $table_prefix;
     }
 
     /**
@@ -32,7 +35,7 @@ class Template_Command extends WP_CLI_Command {
         $filter = ! empty( $assoc_args['grep'] ) ? $assoc_args['grep'] . '%' : '';
         $table = $this->_table_prefix . 'postmeta';
 
-        $sql = "SELECT DISTINCT `meta_value` AS `template` FROM `$table` 
+        $sql = "SELECT DISTINCT `meta_value` AS `template` FROM `$table`
              WHERE `meta_key` = '_wp_page_template'";
 
         if(!empty($filter)) {
@@ -86,7 +89,7 @@ class Template_Command extends WP_CLI_Command {
             $templates[] = $this->_wpdb->prepare('%s', $template);
         }
 
-        $sql = "SELECT `post_id`, `meta_value` AS `template` FROM `$table` 
+        $sql = "SELECT `post_id`, `meta_value` AS `template` FROM `$table`
              WHERE `meta_key` = '_wp_page_template'
                AND `meta_value` IN (" . implode(",", $templates) . ")";
         $posts = $this->_wpdb->get_results($sql, ARRAY_A);
